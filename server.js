@@ -8,7 +8,7 @@ const fs = require("fs/promises");
 
 const port = parseInt(process.env.PORT) || 8000;
 const cacheLifetime = parseInt(process.env.CACHE_LIFETIME) || 60000;
-const filePath = process.argv[0] || process.env.DATA_FILE;
+const filePath = process.env.DATA_FILE;
 const headers = process.env.HEADERS
   ? Object.fromEntries(process.env.HEADERS.split("|").map((e) => e.split(":")))
   : undefined;
