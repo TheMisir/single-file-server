@@ -49,6 +49,7 @@ createServer(async (req, res) => {
     } catch (error) {
       res.statusCode = 500;
       res.statusMessage = "Internal Error";
+      console.error(error);
     } finally {
       res.end();
     }
