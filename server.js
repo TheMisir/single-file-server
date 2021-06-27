@@ -28,7 +28,7 @@ async function getData() {
     return cachedData.data;
   }
 
-  cachedData.data = await fs.readFile(filePath, "binary");
+  cachedData.data = await fs.readFile(filePath, "utf-8");
   cachedData.cachedUntil = Date.now() + cacheLifetime;
 
   return cachedData.data;
