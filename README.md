@@ -1,4 +1,4 @@
-# json-server
+# single-file-server
 
 Simple http server for hosting a single file.
 

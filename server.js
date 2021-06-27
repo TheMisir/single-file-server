@@ -3,7 +3,10 @@ const fs = require("fs/promises");
 
 const port = parseInt(process.env.PORT) || 8000;
 const cacheLifetime = parseInt(process.env.CACHE_LIFETIME) || 60000;
-const filePath = process.env.DATA_FILE || process.argv[0];
+const filePath = process.argv[0] || process.env.DATA_FILE;
+const headers = process.env.HEADERS
+  ? Object.fromEntries(process.env.HEADERS.split("|").map((e) => e.split(":")))
+  : undefined;
 
 if (!filePath) {
   console.error("File path is not provided");
@@ -20,7 +23,7 @@ async function getData() {
     return cachedData.data;
   }
 
-  cachedData.data = await fs.readFile(filePath, "utf-8");
+  cachedData.data = await fs.readFile(filePath, "binary");
   cachedData.cachedUntil = Date.now() + cacheLifetime;
 
   return cachedData.data;
@@ -30,7 +33,12 @@ createServer(async (req, res) => {
   if (req.method === "GET" && req.url && req.url.split("?")[0] === "/") {
     try {
       const data = await getData();
-      res.setHeader("content-type", "application/json; charset=utf-8");
+      if (headers) {
+        for (const key in headers) {
+          res.setHeader(key, headers[key]);
+        }
+      }
+      res.flushHeaders();
       res.write(data);
       res.end();
     } catch (error) {
